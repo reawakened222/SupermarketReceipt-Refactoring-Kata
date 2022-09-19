@@ -53,7 +53,7 @@ namespace SupermarketReceipt.NUnit_Test
             cart.AddItemQuantity(apples, 2.5);
 
             Teller teller = new(catalog);
-            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, toothbrush, 10.0);
+            teller.AddSpecialOffer(SpecialOfferType.PercentageDiscount, toothbrush, 10.0);
 
             // ACT
             Receipt receipt = teller.ChecksOutArticlesFrom(cart);
@@ -99,9 +99,10 @@ namespace SupermarketReceipt.NUnit_Test
             Product apple = new("Apple", ProductUnit.Kilo);
 
             catalog.AddProduct(apple, 1.99);
+
             Teller teller = new(catalog);
-            // TODO: Rename horrible enum value
-            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, 20.0);
+            teller.AddSpecialOffer(SpecialOfferType.PercentageDiscount, apple, 20.0);
+
             ShoppingCart cart = new();
             cart.AddItemQuantity(apple, 10.0);
             Receipt receipt = teller.ChecksOutArticlesFrom(cart);
@@ -205,7 +206,7 @@ namespace SupermarketReceipt.NUnit_Test
             const double discountPercentage = 10.0;
 
             Teller teller = new(catalog);
-            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, discountPercentage);
+            teller.AddSpecialOffer(SpecialOfferType.PercentageDiscount, apple, discountPercentage);
             Receipt receipt = teller.ChecksOutArticlesFrom(cart);
 
             Assert.Multiple(() =>
@@ -246,8 +247,8 @@ namespace SupermarketReceipt.NUnit_Test
             ShoppingCart theCart = new ShoppingCart();
             theCart.AddItem(apple);
             Teller teller = new(catalog);
-            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, 20);
-            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, 40);
+            teller.AddSpecialOffer(SpecialOfferType.PercentageDiscount, apple, 20);
+            teller.AddSpecialOffer(SpecialOfferType.PercentageDiscount, apple, 40);
 
             Assert.That(teller.ChecksOutArticlesFrom(theCart).GetDiscounts()[0].DiscountAmount, Is.EqualTo(-1.2).Within(0.0001), "Only latest discount is active");
         }

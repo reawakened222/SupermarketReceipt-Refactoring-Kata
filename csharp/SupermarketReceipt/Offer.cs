@@ -5,7 +5,7 @@ namespace SupermarketReceipt
     public enum SpecialOfferType
     {
         ThreeForTwo,
-        TenPercentDiscount,
+        PercentageDiscount,
         TwoForAmount,
         FiveForAmount
     }
@@ -29,7 +29,7 @@ namespace SupermarketReceipt
             return offerType switch
             {
                 SpecialOfferType.ThreeForTwo => new ThreeForTwoOffer(product),
-                SpecialOfferType.TenPercentDiscount => new PercentDiscountOffer(product, argument),
+                SpecialOfferType.PercentageDiscount => new PercentageDiscountOffer(product, argument),
                 SpecialOfferType.TwoForAmount => new NItemsForAmountOffer(product, 2, argument),
                 SpecialOfferType.FiveForAmount => new NItemsForAmountOffer(product, 5, argument),
                 _ => null,
@@ -38,9 +38,9 @@ namespace SupermarketReceipt
 
         public abstract Discount ComputeDiscount(double quantity, double unitPrice);
     }
-    class PercentDiscountOffer : Offer
+    class PercentageDiscountOffer : Offer
     {
-        public PercentDiscountOffer(Product product, double argument) : base(product, argument) { }
+        public PercentageDiscountOffer(Product product, double argument) : base(product, argument) { }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
         {
             return new Discount(Product, Argument + "% off", -quantity * unitPrice * Argument / 100.0);
