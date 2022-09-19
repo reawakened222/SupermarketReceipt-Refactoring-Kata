@@ -52,42 +52,7 @@ namespace SupermarketReceipt
 
             static Discount ComputeDiscount(Product aProduct, double quantity, Offer offer, double unitPrice)
             {
-                switch (offer.OfferType)
-                {
-                    case SpecialOfferType.ThreeForTwo:
-                        int xForAmountDiscount = 3;
-                        if ((int)quantity > 2)
-                        {
-                            var discountAmount = quantity * unitPrice - ((int)quantity / xForAmountDiscount * 2 * unitPrice + (int)quantity % 3 * unitPrice);
-                            return new Discount(aProduct, "3 for 2", -discountAmount);
-                        }
-                        break;
-
-                    case SpecialOfferType.TwoForAmount:
-
-                        xForAmountDiscount = 2;
-                        if ((int)quantity >= 2)
-                        {
-                            var total = offer.Argument * ((int)quantity / xForAmountDiscount) + (int)quantity % 2 * unitPrice;
-                            var discountN = unitPrice * quantity - total;
-                            return new Discount(aProduct, "2 for " + offer.Argument, -discountN);
-                        }
-
-                        break;
-                    case SpecialOfferType.FiveForAmount:
-                        xForAmountDiscount = 5;
-                        if ((int)quantity >= 5)
-                        {
-                            var discountTotal = unitPrice * quantity - (offer.Argument * ((int)quantity / xForAmountDiscount) + (int)quantity % 5 * unitPrice);
-                            return new Discount(aProduct, xForAmountDiscount + " for " + offer.Argument, -discountTotal);
-                        }
-                        break;
-                    case SpecialOfferType.TenPercentDiscount:
-                        return new Discount(aProduct, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
-                    default:
-                        return null;
-                }
-                return null;
+                return offer.ComputeDiscount(aProduct, quantity, unitPrice);
             }
         }
     }
