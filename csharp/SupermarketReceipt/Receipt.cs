@@ -10,12 +10,9 @@ namespace SupermarketReceipt
 
         public double GetTotalPrice()
         {
-            var total = 0.0;
-            total = _items.Aggregate(0.0, (x, nextItem) => x + nextItem.TotalPrice);
-            total += _discounts.Aggregate(0.0, (x, nextItem) => x + nextItem.DiscountAmount);
+            var total = _items.Aggregate(0.0, (x, nextItem) => x + nextItem.TotalPrice) + 
+                _discounts.Aggregate(0.0, (x, nextItem) => x + nextItem.DiscountAmount);
 
-            //foreach (var item in _items) total += item.TotalPrice;
-            //foreach (var discount in _discounts) total += discount.DiscountAmount;
             return total;
         }
 
