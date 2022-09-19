@@ -14,14 +14,12 @@ namespace SupermarketReceipt
     {
         private Product _product;
 
-        public Offer(SpecialOfferType offerType, Product product, double argument)
+        public Offer(Product product, double argument)
         {
-            OfferType = offerType;
             Argument = argument;
             _product = product;
         }
 
-        public SpecialOfferType OfferType { get; }
         public double Argument { get; }
 
         protected Product Product { get { return _product; } }
@@ -42,7 +40,7 @@ namespace SupermarketReceipt
     }
     public class PercentDiscountOffer : Offer
     {
-        public PercentDiscountOffer(Product product, double argument) : base(SpecialOfferType.TenPercentDiscount, product, argument)
+        public PercentDiscountOffer(Product product, double argument) : base(product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -52,7 +50,7 @@ namespace SupermarketReceipt
     }
     public class ThreeForTwoOffer : Offer
     {
-        public ThreeForTwoOffer(Product product, double argument) : base(SpecialOfferType.ThreeForTwo, product, argument)
+        public ThreeForTwoOffer(Product product, double argument) : base(product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -68,7 +66,7 @@ namespace SupermarketReceipt
     }
     public class TwoForAmountOffer : Offer
     {
-        public TwoForAmountOffer(Product product, double argument) : base(SpecialOfferType.TwoForAmount, product, argument)
+        public TwoForAmountOffer(Product product, double argument) : base(product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -85,7 +83,7 @@ namespace SupermarketReceipt
     }
     public class FiveForAmountOffer : Offer
     {
-        public FiveForAmountOffer(Product product, double argument) : base(SpecialOfferType.FiveForAmount, product, argument)
+        public FiveForAmountOffer(Product product, double argument) : base(product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
