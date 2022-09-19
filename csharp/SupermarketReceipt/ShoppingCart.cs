@@ -36,6 +36,7 @@ namespace SupermarketReceipt
 
         public void HandleOffers(Receipt receipt, Dictionary<Product, Offer> offers, SupermarketCatalog catalog)
         {
+            //TODO: https://refactoring.com/catalog/replaceLoopWithPipeline.html
             foreach (var currentProduct in _productQuantities.Keys)
             {
                 var quantity = _productQuantities[currentProduct];

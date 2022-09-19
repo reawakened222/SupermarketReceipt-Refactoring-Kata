@@ -14,7 +14,7 @@ namespace SupermarketReceipt
 
         public void AddSpecialOffer(SpecialOfferType offerType, Product product, double argument)
         {
-            _offers[product] = Offer.OfferFactory(offerType, product, argument);
+            _offers[product] = Offer.GetOffer(offerType, product, argument);
         }
 
         public Receipt ChecksOutArticlesFrom(ShoppingCart theCart)
@@ -24,11 +24,11 @@ namespace SupermarketReceipt
             var productQuantities = theCart.GetItems();
             foreach (var pq in productQuantities)
             {
-                var p = pq.Product;
+                var product = pq.Product;
                 var quantity = pq.Quantity;
-                var unitPrice = _catalog.GetUnitPrice(p);
+                var unitPrice = _catalog.GetUnitPrice(product);
                 var price = quantity * unitPrice;
-                receipt.AddProduct(p, quantity, unitPrice, price);
+                receipt.AddProduct(product, quantity, unitPrice, price);
             }
 
             theCart.HandleOffers(receipt, _offers, _catalog);

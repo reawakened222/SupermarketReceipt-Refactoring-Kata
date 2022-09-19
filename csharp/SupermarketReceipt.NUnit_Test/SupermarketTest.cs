@@ -239,6 +239,12 @@ namespace SupermarketReceipt.NUnit_Test
         }
 
         [TestCase]
+        public void OfferFactoryNullCreation()
+        {
+            Assert.That(Offer.GetOffer((SpecialOfferType)100, new Product("Apple", ProductUnit.Kilo), 2.0), Is.EqualTo(null));
+        }
+
+        [TestCase]
         public void AddingMultipleOffersForSameItem()
         {
             FakeCatalog catalog = new();
