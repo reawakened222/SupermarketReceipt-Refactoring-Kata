@@ -24,7 +24,9 @@ namespace SupermarketReceipt
         public SpecialOfferType OfferType { get; }
         public double Argument { get; }
 
-        public Discount ComputeDiscount(double quantity, double unitPrice)
+        protected Product Product { get { return _product; } }
+
+        public virtual Discount ComputeDiscount(double quantity, double unitPrice)
         {
             switch (this.OfferType)
             {
@@ -62,6 +64,65 @@ namespace SupermarketReceipt
                     return null;
             }
             return null;
+        }
+    }
+    public class PercentDiscountOffer : Offer
+    {
+        public PercentDiscountOffer(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        {
+        }
+        public override Discount ComputeDiscount(double quantity, double unitPrice)
+        {
+            return new Discount(Product, Argument + "% off", -quantity * unitPrice * Argument / 100.0);
+        }
+    }
+    public class ThreeForTwoOffer : Offer
+    {
+        public ThreeForTwoOffer(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        {
+        }
+        public override Discount ComputeDiscount(double quantity, double unitPrice)
+        {
+            Discount result = null;
+            if ((int)quantity > 2)
+            {
+                var discountAmount = quantity * unitPrice - ((int)quantity / 3 * 2 * unitPrice + (int)quantity % 3 * unitPrice);
+                result = new Discount(Product, "3 for 2", -discountAmount);
+            }
+            return result;
+        }
+    }
+    public class TwoForAmount : Offer
+    {
+        public TwoForAmount(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        {
+        }
+        public override Discount ComputeDiscount(double quantity, double unitPrice)
+        {
+            Discount result = null;
+            if ((int)quantity >= 2)
+            {
+                var total = this.Argument * ((int)quantity / 2) + (int)quantity % 2 * unitPrice;
+                var discountN = unitPrice * quantity - total;
+                result = new Discount(Product, "2 for " + this.Argument, -discountN);
+            }
+            return result;
+        }
+    }
+    public class FiveForAmount : Offer
+    {
+        public FiveForAmount(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        {
+        }
+        public override Discount ComputeDiscount(double quantity, double unitPrice)
+        {
+            Discount result = null;
+            if ((int)quantity >= 5)
+            {
+                var discountTotal = unitPrice * quantity - (this.Argument * ((int)quantity / 5) + (int)quantity % 5 * unitPrice);
+                result = new Discount(this.Product, 5 + " for " + this.Argument, -discountTotal);
+            }
+            return result;
         }
     }
 }
