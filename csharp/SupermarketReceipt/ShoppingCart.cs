@@ -35,44 +35,45 @@ namespace SupermarketReceipt
 
         public void HandleOffers(Receipt receipt, Dictionary<Product, Offer> offers, SupermarketCatalog catalog)
         {
-            foreach (var p in _productQuantities.Keys)
+            foreach (var currentProduct in _productQuantities.Keys)
             {
-                var quantity = _productQuantities[p];
+                var quantity = _productQuantities[currentProduct];
                 var quantityAsInt = (int) quantity;
-                if (offers.ContainsKey(p))
+                if (offers.ContainsKey(currentProduct))
                 {
-                    var offer = offers[p];
-                    var unitPrice = catalog.GetUnitPrice(p);
+                    var offer = offers[currentProduct];
+                    var unitPrice = catalog.GetUnitPrice(currentProduct);
                     Discount discount = null;
-                    var x = 1;
+                    var xForAmountDiscount = 1;
                     if (offer.OfferType == SpecialOfferType.ThreeForTwo)
                     {
-                        x = 3;
+                        xForAmountDiscount = 3;
                     }
                     else if (offer.OfferType == SpecialOfferType.TwoForAmount)
                     {
-                        x = 2;
+                        xForAmountDiscount = 2;
                         if (quantityAsInt >= 2)
                         {
-                            var total = offer.Argument * (quantityAsInt / x) + quantityAsInt % 2 * unitPrice;
+                            var total = offer.Argument * (quantityAsInt / xForAmountDiscount) + quantityAsInt % 2 * unitPrice;
                             var discountN = unitPrice * quantity - total;
-                            discount = new Discount(p, "2 for " + offer.Argument, -discountN);
+                            discount = new Discount(currentProduct, "2 for " + offer.Argument, -discountN);
                         }
                     }
 
-                    if (offer.OfferType == SpecialOfferType.FiveForAmount) x = 5;
-                    var numberOfXs = quantityAsInt / x;
+                    if (offer.OfferType == SpecialOfferType.FiveForAmount) xForAmountDiscount = 5;
+                    var numberOfXs = quantityAsInt / xForAmountDiscount;
                     if (offer.OfferType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2)
                     {
                         var discountAmount = quantity * unitPrice - (numberOfXs * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
-                        discount = new Discount(p, "3 for 2", -discountAmount);
+                        discount = new Discount(currentProduct, "3 for 2", -discountAmount);
                     }
 
-                    if (offer.OfferType == SpecialOfferType.TenPercentDiscount) discount = new Discount(p, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
+                    if (offer.OfferType == SpecialOfferType.TenPercentDiscount) 
+                        discount = new Discount(currentProduct, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
                     if (offer.OfferType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5)
                     {
                         var discountTotal = unitPrice * quantity - (offer.Argument * numberOfXs + quantityAsInt % 5 * unitPrice);
-                        discount = new Discount(p, x + " for " + offer.Argument, -discountTotal);
+                        discount = new Discount(currentProduct, xForAmountDiscount + " for " + offer.Argument, -discountTotal);
                     }
 
                     if (discount != null)
