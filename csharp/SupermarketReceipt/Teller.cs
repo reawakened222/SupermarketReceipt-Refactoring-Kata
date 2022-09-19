@@ -20,6 +20,7 @@ namespace SupermarketReceipt
         public Receipt ChecksOutArticlesFrom(ShoppingCart theCart)
         {
             var receipt = new Receipt();
+            if (null == theCart) return receipt;
             var productQuantities = theCart.GetItems();
             foreach (var pq in productQuantities)
             {
