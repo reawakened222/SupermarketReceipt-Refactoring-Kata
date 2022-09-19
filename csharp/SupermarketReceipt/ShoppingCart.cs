@@ -73,7 +73,7 @@ namespace SupermarketReceipt
                         discount = new Discount(aProduct, "2 for " + offer.Argument, -discountN);
                     }
                 }
-                if (offer.OfferType == SpecialOfferType.FiveForAmount)
+                else if (offer.OfferType == SpecialOfferType.FiveForAmount)
                 {
                     xForAmountDiscount = 5;
                     if (quantityAsInt >= 5)
@@ -82,7 +82,7 @@ namespace SupermarketReceipt
                         discount = new Discount(aProduct, xForAmountDiscount + " for " + offer.Argument, -discountTotal);
                     }
                 }
-                if (offer.OfferType == SpecialOfferType.TenPercentDiscount)
+                else if (offer.OfferType == SpecialOfferType.TenPercentDiscount)
                     discount = new Discount(aProduct, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
 
                 return discount;
