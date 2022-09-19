@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SupermarketReceipt
 {
@@ -37,12 +38,9 @@ namespace SupermarketReceipt
         public void HandleOffers(Receipt receipt, Dictionary<Product, Offer> offers, SupermarketCatalog catalog)
         {
             //TODO: https://refactoring.com/catalog/replaceLoopWithPipeline.html
-            foreach (var currentProduct in _productQuantities.Keys)
+            foreach (var discount in _productQuantities.Keys.Select(currentProduct => getDiscount(offers, catalog, currentProduct)).Where(discount => discount != null))
             {
-                Discount discount = getDiscount(offers, catalog, currentProduct);
-
-                if (discount != null)
-                    receipt.AddDiscount(discount);
+                receipt.AddDiscount(discount);
             }
 
             Discount getDiscount(Dictionary<Product, Offer> offers, SupermarketCatalog catalog, Product currentProduct)
