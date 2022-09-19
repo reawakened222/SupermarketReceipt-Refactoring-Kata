@@ -24,7 +24,7 @@ namespace SupermarketReceipt
 
         protected Product Product { get { return _product; } }
 
-        public static Offer OfferFactory(SpecialOfferType offerType, Product product, double argument)
+        public static Offer GetOffer(SpecialOfferType offerType, Product product, double argument)
         {
             return offerType switch
             {
