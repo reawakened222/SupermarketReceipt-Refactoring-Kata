@@ -43,9 +43,9 @@ namespace SupermarketReceipt
 
             Discount getDiscount(Dictionary<Product, Offer> offers, SupermarketCatalog catalog, Product currentProduct)
             {
-                return (!offers.ContainsKey(currentProduct)) ? 
-                    null : 
-                    offers[currentProduct].ComputeDiscount((double)_productQuantities[currentProduct], (double)catalog.GetUnitPrice(currentProduct));
+                return (offers.ContainsKey(currentProduct)) ? 
+                    offers[currentProduct].ComputeDiscount((double)_productQuantities[currentProduct], (double)catalog.GetUnitPrice(currentProduct))
+                    : null;
             }
         }
     }
