@@ -52,47 +52,42 @@ namespace SupermarketReceipt
 
             static Discount ComputeDiscount(Product aProduct, double quantity, Offer offer, double unitPrice)
             {
-                Discount discount = null;
-                var quantityAsInt = (int)quantity;
-                var xForAmountDiscount = 1;
                 switch (offer.OfferType)
                 {
                     case SpecialOfferType.ThreeForTwo:
-                        xForAmountDiscount = 3;
-                        if (quantityAsInt > 2)
+                        int xForAmountDiscount = 3;
+                        if ((int)quantity > 2)
                         {
-                            var discountAmount = quantity * unitPrice - (quantityAsInt / xForAmountDiscount * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
-                            discount = new Discount(aProduct, "3 for 2", -discountAmount);
+                            var discountAmount = quantity * unitPrice - ((int)quantity / xForAmountDiscount * 2 * unitPrice + (int)quantity % 3 * unitPrice);
+                            return new Discount(aProduct, "3 for 2", -discountAmount);
                         }
                         break;
 
                     case SpecialOfferType.TwoForAmount:
 
                         xForAmountDiscount = 2;
-                        if (quantityAsInt >= 2)
+                        if ((int)quantity >= 2)
                         {
-                            var total = offer.Argument * (quantityAsInt / xForAmountDiscount) + quantityAsInt % 2 * unitPrice;
+                            var total = offer.Argument * ((int)quantity / xForAmountDiscount) + (int)quantity % 2 * unitPrice;
                             var discountN = unitPrice * quantity - total;
-                            discount = new Discount(aProduct, "2 for " + offer.Argument, -discountN);
+                            return new Discount(aProduct, "2 for " + offer.Argument, -discountN);
                         }
 
                         break;
                     case SpecialOfferType.FiveForAmount:
                         xForAmountDiscount = 5;
-                        if (quantityAsInt >= 5)
+                        if ((int)quantity >= 5)
                         {
-                            var discountTotal = unitPrice * quantity - (offer.Argument * (quantityAsInt / xForAmountDiscount) + quantityAsInt % 5 * unitPrice);
-                            discount = new Discount(aProduct, xForAmountDiscount + " for " + offer.Argument, -discountTotal);
+                            var discountTotal = unitPrice * quantity - (offer.Argument * ((int)quantity / xForAmountDiscount) + (int)quantity % 5 * unitPrice);
+                            return new Discount(aProduct, xForAmountDiscount + " for " + offer.Argument, -discountTotal);
                         }
                         break;
                     case SpecialOfferType.TenPercentDiscount:
-                        discount = new Discount(aProduct, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
-                        break;
+                        return new Discount(aProduct, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
                     default:
-                        discount = null;
-                        break;
+                        return null;
                 }
-                return discount;
+                return null;
             }
         }
     }
