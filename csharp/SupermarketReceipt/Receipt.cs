@@ -16,9 +16,9 @@ namespace SupermarketReceipt
             return total;
         }
 
-        public void AddProduct(Product p, double quantity, double price, double totalPrice)
+        public void AddProduct(Product p, double quantity, double price)
         {
-            _items.Add(new ReceiptItem(p, quantity, price, totalPrice));
+            _items.Add(new ReceiptItem(p, quantity, price, quantity * price));
         }
 
         public List<ReceiptItem> GetItems()
