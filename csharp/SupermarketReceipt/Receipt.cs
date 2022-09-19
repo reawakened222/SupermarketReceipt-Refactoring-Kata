@@ -31,6 +31,12 @@ namespace SupermarketReceipt
             _discounts.Add(discount);
         }
 
+        public void AddDiscounts(IEnumerable<Discount> discounts)
+        {
+            foreach (var discount in discounts) 
+                AddDiscount(discount);
+        }
+
         public List<Discount> GetDiscounts()
         {
             return _discounts;

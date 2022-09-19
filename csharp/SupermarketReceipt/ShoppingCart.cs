@@ -37,19 +37,15 @@ namespace SupermarketReceipt
 
         public void HandleOffers(Receipt receipt, Dictionary<Product, Offer> offers, SupermarketCatalog catalog)
         {
-            //TODO: https://refactoring.com/catalog/replaceLoopWithPipeline.html
-            foreach (var discount in _productQuantities.Keys.Select(currentProduct => getDiscount(offers, catalog, currentProduct)).Where(discount => discount != null))
-            {
-                receipt.AddDiscount(discount);
-            }
+            IEnumerable<Discount> validDiscounts = _productQuantities.Keys.Select(currentProduct => getDiscount(offers, catalog, currentProduct)).Where(discount => discount != null);
+            receipt.AddDiscounts(validDiscounts);
+
 
             Discount getDiscount(Dictionary<Product, Offer> offers, SupermarketCatalog catalog, Product currentProduct)
             {
-                if (!offers.ContainsKey(currentProduct))
-                    return null;
-
-                var offer = offers[currentProduct];
-                return offer.ComputeDiscount((double)_productQuantities[currentProduct], (double)catalog.GetUnitPrice(currentProduct));
+                return (!offers.ContainsKey(currentProduct)) ? 
+                    null : 
+                    offers[currentProduct].ComputeDiscount((double)_productQuantities[currentProduct], (double)catalog.GetUnitPrice(currentProduct));
             }
         }
     }
