@@ -70,10 +70,9 @@ namespace SupermarketReceipt
                 }
                 if (offer.OfferType == SpecialOfferType.FiveForAmount) xForAmountDiscount = 5;
 
-                var numberOfXs = quantityAsInt / xForAmountDiscount;
                 if (offer.OfferType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2)
                 {
-                    var discountAmount = quantity * unitPrice - (numberOfXs * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
+                    var discountAmount = quantity * unitPrice - (quantityAsInt / xForAmountDiscount * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
                     discount = new Discount(aProduct, "3 for 2", -discountAmount);
                 }
 
@@ -81,7 +80,7 @@ namespace SupermarketReceipt
                     discount = new Discount(aProduct, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
                 if (offer.OfferType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5)
                 {
-                    var discountTotal = unitPrice * quantity - (offer.Argument * numberOfXs + quantityAsInt % 5 * unitPrice);
+                    var discountTotal = unitPrice * quantity - (offer.Argument * (quantityAsInt / xForAmountDiscount) + quantityAsInt % 5 * unitPrice);
                     discount = new Discount(aProduct, xForAmountDiscount + " for " + offer.Argument, -discountTotal);
                 }
 
