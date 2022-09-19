@@ -28,17 +28,17 @@ namespace SupermarketReceipt
         {
             return offerType switch
             {
-                SpecialOfferType.ThreeForTwo => new ThreeForTwoOffer(product, argument),
+                SpecialOfferType.ThreeForTwo => new ThreeForTwoOffer(product),
                 SpecialOfferType.TenPercentDiscount => new PercentDiscountOffer(product, argument),
-                SpecialOfferType.TwoForAmount => new TwoForAmountOffer(product, argument),
-                SpecialOfferType.FiveForAmount => new FiveForAmountOffer(product, argument),
+                SpecialOfferType.TwoForAmount => new NItemsForAmountOffer(product, 2, argument),
+                SpecialOfferType.FiveForAmount => new NItemsForAmountOffer(product, 5, argument),
                 _ => null,
             };
         }
 
         public abstract Discount ComputeDiscount(double quantity, double unitPrice);
     }
-    public class PercentDiscountOffer : Offer
+    class PercentDiscountOffer : Offer
     {
         public PercentDiscountOffer(Product product, double argument) : base(product, argument) { }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -46,9 +46,9 @@ namespace SupermarketReceipt
             return new Discount(Product, Argument + "% off", -quantity * unitPrice * Argument / 100.0);
         }
     }
-    public class ThreeForTwoOffer : Offer
+    class ThreeForTwoOffer : Offer
     {
-        public ThreeForTwoOffer(Product product, double argument) : base(product, argument) { }
+        public ThreeForTwoOffer(Product product) : base(product, -1) { }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
         {
             Discount result = null;
@@ -61,36 +61,22 @@ namespace SupermarketReceipt
             return result;
         }
     }
-    public class TwoForAmountOffer : Offer
+    class NItemsForAmountOffer : Offer
     {
-        public TwoForAmountOffer(Product product, double argument) : base(product, argument) { }
-        public override Discount ComputeDiscount(double quantity, double unitPrice)
+        private readonly int _numberOfItems;
+        public NItemsForAmountOffer(Product product, int numberOfItems, double argument) : base(product, argument) 
         {
-            Discount result = null;
-            int quantityAsInt = (int)quantity;
-            const int NrInDealPack = 2;
-            if (quantityAsInt >= NrInDealPack)
-            {
-                var total = Argument * (quantityAsInt / NrInDealPack) + quantityAsInt % NrInDealPack * unitPrice;
-                var discountN = unitPrice * quantity - total;
-                result = new Discount(Product, $"2 for " + Argument, -discountN);
-            }
-            return result;
+            _numberOfItems = numberOfItems;
         }
-    }
-    public class FiveForAmountOffer : Offer
-    {
-        public FiveForAmountOffer(Product product, double argument) : base(product, argument) { }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
         {
             Discount result = null;
             int quantityAsInt = (int)quantity;
-            const int NrInDealPack = 5;
-            if (quantityAsInt >= NrInDealPack)
+            if (quantityAsInt >= _numberOfItems)
             {
-                double total = Argument * (quantityAsInt / NrInDealPack) + quantityAsInt % NrInDealPack * unitPrice;
+                var total = Argument * (quantityAsInt / _numberOfItems) + quantityAsInt % _numberOfItems * unitPrice;
                 var discountTotal = unitPrice * quantity - total;
-                result = new Discount(this.Product, NrInDealPack + " for " + Argument, -discountTotal);
+                result = new Discount(Product, $"{_numberOfItems} for {Argument}", -discountTotal);
             }
             return result;
         }
