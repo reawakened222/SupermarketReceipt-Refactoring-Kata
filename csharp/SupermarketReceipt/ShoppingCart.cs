@@ -39,16 +39,19 @@ namespace SupermarketReceipt
             //TODO: https://refactoring.com/catalog/replaceLoopWithPipeline.html
             foreach (var currentProduct in _productQuantities.Keys)
             {
-                var quantity = _productQuantities[currentProduct];
-                if (offers.ContainsKey(currentProduct))
-                {
-                    var offer = offers[currentProduct];
-                    var unitPrice = catalog.GetUnitPrice(currentProduct);
-                    Discount discount = offer.ComputeDiscount(quantity, unitPrice);
+                Discount discount = getDiscount(offers, catalog, currentProduct);
 
-                    if (discount != null)
-                        receipt.AddDiscount(discount);
-                }
+                if (discount != null)
+                    receipt.AddDiscount(discount);
+            }
+
+            Discount getDiscount(Dictionary<Product, Offer> offers, SupermarketCatalog catalog, Product currentProduct)
+            {
+                if (!offers.ContainsKey(currentProduct))
+                    return null;
+
+                var offer = offers[currentProduct];
+                return offer.ComputeDiscount((double)_productQuantities[currentProduct], (double)catalog.GetUnitPrice(currentProduct));
             }
         }
     }
