@@ -26,6 +26,18 @@ namespace SupermarketReceipt
 
         protected Product Product { get { return _product; } }
 
+        public static Offer OfferFactory(SpecialOfferType offerType, Product product, double argument)
+        {
+            return offerType switch
+            {
+                SpecialOfferType.ThreeForTwo => new ThreeForTwoOffer(product, argument),
+                SpecialOfferType.TenPercentDiscount => new PercentDiscountOffer(product, argument),
+                SpecialOfferType.TwoForAmount => new TwoForAmountOffer(product, argument),
+                SpecialOfferType.FiveForAmount => new FiveForAmountOffer(product, argument),
+                _ => null,
+            };
+        }
+
         public virtual Discount ComputeDiscount(double quantity, double unitPrice)
         {
             switch (this.OfferType)
@@ -68,7 +80,7 @@ namespace SupermarketReceipt
     }
     public class PercentDiscountOffer : Offer
     {
-        public PercentDiscountOffer(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        public PercentDiscountOffer(Product product, double argument) : base(SpecialOfferType.TenPercentDiscount, product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -78,7 +90,7 @@ namespace SupermarketReceipt
     }
     public class ThreeForTwoOffer : Offer
     {
-        public ThreeForTwoOffer(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        public ThreeForTwoOffer(Product product, double argument) : base(SpecialOfferType.ThreeForTwo, product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -92,9 +104,9 @@ namespace SupermarketReceipt
             return result;
         }
     }
-    public class TwoForAmount : Offer
+    public class TwoForAmountOffer : Offer
     {
-        public TwoForAmount(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        public TwoForAmountOffer(Product product, double argument) : base(SpecialOfferType.TwoForAmount, product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
@@ -109,9 +121,9 @@ namespace SupermarketReceipt
             return result;
         }
     }
-    public class FiveForAmount : Offer
+    public class FiveForAmountOffer : Offer
     {
-        public FiveForAmount(SpecialOfferType offerType, Product product, double argument) : base(offerType, product, argument)
+        public FiveForAmountOffer(Product product, double argument) : base(SpecialOfferType.FiveForAmount, product, argument)
         {
         }
         public override Discount ComputeDiscount(double quantity, double unitPrice)
