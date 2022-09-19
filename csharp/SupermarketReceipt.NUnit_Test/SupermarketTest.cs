@@ -189,6 +189,31 @@ namespace SupermarketReceipt.NUnit_Test
             // Hack to check total amount of items
             Assert.That(teller.ChecksOutArticlesFrom(cart).GetTotalPrice(), Is.EqualTo(teller.ChecksOutArticlesFrom(cart2).GetTotalPrice()));
         }
+
+        [TestCase]
+        public void ComputeDiscountAmount()
+        {
+            Product apple = new("Apple", ProductUnit.Kilo);
+            const double pricePerKgInEuro = 2.0;
+            catalog.AddProduct(apple, pricePerKgInEuro);
+
+            ShoppingCart cart = new();
+            const double purchasedAmount = 3.0;
+            cart.AddItemQuantity(apple, purchasedAmount);
+
+            const double totalPriceNoDiscount = pricePerKgInEuro * purchasedAmount;
+            const double discountPercentage = 10.0;
+
+            Teller teller = new(catalog);
+            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, discountPercentage);
+            Receipt receipt = teller.ChecksOutArticlesFrom(cart);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(receipt.GetDiscounts()[0].DiscountAmount, Is.EqualTo(-(1.0 / discountPercentage) * totalPriceNoDiscount).Within(0.0001), "Discount Amount is reduction in price from total amount");
+                Assert.That(receipt.GetTotalPrice() + Math.Abs(receipt.GetDiscounts()[0].DiscountAmount), Is.EqualTo(totalPriceNoDiscount).Within(0.0001), "Final price + discount = Full Price without Discount");
+            });
+        }
     }
 
     [TestFixture]
@@ -210,6 +235,21 @@ namespace SupermarketReceipt.NUnit_Test
             var ex = Assert.Throws<ArgumentOutOfRangeException>(delegate { catalog.AddProduct(new("Apple", ProductUnit.Kilo), -42.0); });
 
             Assert.That(ex.Message, Is.EqualTo("The price may not be negative. (Parameter 'price')"));
+        }
+
+        [TestCase]
+        public void AddingMultipleOffersForSameItem()
+        {
+            FakeCatalog catalog = new();
+            Product apple = new("Apple", ProductUnit.Kilo);
+            catalog.AddProduct(apple, 3.00);
+            ShoppingCart theCart = new ShoppingCart();
+            theCart.AddItem(apple);
+            Teller teller = new(catalog);
+            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, 20);
+            teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, apple, 40);
+
+            Assert.That(teller.ChecksOutArticlesFrom(theCart).GetDiscounts()[0].DiscountAmount, Is.EqualTo(-1.2).Within(0.0001), "Only latest discount is active");
         }
     }
 }
