@@ -43,16 +43,16 @@ namespace SupermarketReceipt
                 {
                     var offer = offers[currentProduct];
                     var unitPrice = catalog.GetUnitPrice(currentProduct);
-                    Discount discount = ComputeDiscount(currentProduct, quantity, offer, unitPrice);
+                    Discount discount = ComputeDiscount(quantity, offer, unitPrice);
 
                     if (discount != null)
                         receipt.AddDiscount(discount);
                 }
             }
 
-            static Discount ComputeDiscount(Product aProduct, double quantity, Offer offer, double unitPrice)
+            static Discount ComputeDiscount(double quantity, Offer offer, double unitPrice)
             {
-                return offer.ComputeDiscount(aProduct, quantity, unitPrice);
+                return offer.ComputeDiscount(quantity, unitPrice);
             }
         }
     }

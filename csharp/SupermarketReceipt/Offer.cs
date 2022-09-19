@@ -24,7 +24,7 @@ namespace SupermarketReceipt
         public SpecialOfferType OfferType { get; }
         public double Argument { get; }
 
-        public Discount ComputeDiscount(Product aProduct, double quantity, double unitPrice)
+        public Discount ComputeDiscount(double quantity, double unitPrice)
         {
             switch (this.OfferType)
             {
@@ -33,7 +33,7 @@ namespace SupermarketReceipt
                     if ((int)quantity > 2)
                     {
                         var discountAmount = quantity * unitPrice - ((int)quantity / xForAmountDiscount * 2 * unitPrice + (int)quantity % 3 * unitPrice);
-                        return new Discount(aProduct, "3 for 2", -discountAmount);
+                        return new Discount(this._product, "3 for 2", -discountAmount);
                     }
                     break;
 
@@ -44,7 +44,7 @@ namespace SupermarketReceipt
                     {
                         var total = this.Argument * ((int)quantity / xForAmountDiscount) + (int)quantity % 2 * unitPrice;
                         var discountN = unitPrice * quantity - total;
-                        return new Discount(aProduct, "2 for " + this.Argument, -discountN);
+                        return new Discount(this._product, "2 for " + this.Argument, -discountN);
                     }
 
                     break;
@@ -53,11 +53,11 @@ namespace SupermarketReceipt
                     if ((int)quantity >= 5)
                     {
                         var discountTotal = unitPrice * quantity - (this.Argument * ((int)quantity / xForAmountDiscount) + (int)quantity % 5 * unitPrice);
-                        return new Discount(aProduct, xForAmountDiscount + " for " + this.Argument, -discountTotal);
+                        return new Discount(this._product, xForAmountDiscount + " for " + this.Argument, -discountTotal);
                     }
                     break;
                 case SpecialOfferType.TenPercentDiscount:
-                    return new Discount(aProduct, this.Argument + "% off", -quantity * unitPrice * this.Argument / 100.0);
+                    return new Discount(this._product, this.Argument + "% off", -quantity * unitPrice * this.Argument / 100.0);
                 default:
                     return null;
             }
