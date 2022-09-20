@@ -41,6 +41,11 @@ namespace SupermarketReceipt
         {
             return _discounts;
         }
+
+        public double GetTotalDiscount()
+        {
+            return _discounts.Aggregate(0.0, (acc, discount) => acc + discount.DiscountAmount);
+        }
     }
 
     public class ReceiptItem

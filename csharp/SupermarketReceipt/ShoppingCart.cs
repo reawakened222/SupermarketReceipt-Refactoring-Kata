@@ -40,6 +40,33 @@ namespace SupermarketReceipt
             IEnumerable<Discount> validDiscounts = _productQuantities.Keys.Select(currentProduct => getDiscount(offers, catalog, currentProduct)).Where(discount => discount != null);
             receipt.AddDiscounts(validDiscounts);
 
+            var bundles = catalog.GetBundles();
+            int bundlesAmount = bundles.Count();
+            for (int i = 0; i < bundlesAmount; ++i)
+            {
+                var bundle = bundles[i].GetBundleCopy();
+                var bundle_fullfilled = bundles[i].GetBundleCopy();
+                foreach (var product in _productQuantities.Keys)
+                {
+                    if (bundle.ContainsKey(product))
+                    {
+                        if (bundle[product] <= (double)_productQuantities[product])
+                        {
+                            bundle_fullfilled[product] = -1;
+                        }
+                    }
+                }
+                /* All bundle items purchased => Bundle completed  */
+                if (bundle_fullfilled.Values.Where(x => x == -1).Count() == bundle_fullfilled.Count)
+                {
+                    foreach (var item in bundle)
+                    {
+                        const double tenPercent = 0.1;
+                        receipt.AddDiscount(new Discount(item.Key, "Part of bundle", -(tenPercent * (double)catalog.GetUnitPrice(item.Key) * item.Value)));
+
+                    }
+                }
+            }
 
             Discount getDiscount(Dictionary<Product, Offer> offers, SupermarketCatalog catalog, Product currentProduct)
             {

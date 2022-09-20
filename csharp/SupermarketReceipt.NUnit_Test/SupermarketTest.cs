@@ -215,6 +215,33 @@ namespace SupermarketReceipt.NUnit_Test
                 Assert.That(receipt.GetTotalPrice() + Math.Abs(receipt.GetDiscounts()[0].DiscountAmount), Is.EqualTo(totalPriceNoDiscount).Within(0.0001), "Final price + discount = Full Price without Discount");
             });
         }
+
+        [TestCase]
+        public void BasicBundle()
+        {
+            Bundle bundle = new Bundle();
+            var toothbrush = new Product("Toothbrush", ProductUnit.Each);
+            var toothpaste = new Product("Toothpaste", ProductUnit.Each);
+            catalog.AddProduct(toothbrush, 0.99);
+            catalog.AddProduct(toothpaste, 1.79);
+
+            bundle.AddItem(toothbrush, 1);
+            bundle.AddItem(toothpaste, 1);
+            catalog.AddBundleOffer(bundle);
+
+            ShoppingCart cart = new ShoppingCart();
+            cart.AddItem(toothpaste);
+            cart.AddItem(toothbrush);
+
+            Teller teller = new(catalog);
+            Receipt receipt = teller.ChecksOutArticlesFrom(cart);
+            Assert.That(receipt.GetTotalPrice(), Is.EqualTo(0.9 * (0.99 + 1.79)).Within(0.0001));
+
+            cart.AddItem(toothbrush);
+            var receipt2 = teller.ChecksOutArticlesFrom(cart);
+            Assert.That(receipt2.GetTotalPrice(), Is.EqualTo(0.9 * (0.99 + 1.79) + 0.99).Within(0.0001));
+            Assert.That(receipt2.GetTotalDiscount(), Is.EqualTo(receipt.GetTotalDiscount()).Within(0.0001));
+        }
     }
 
     [TestFixture]

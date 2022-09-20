@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SupermarketReceipt
 {
@@ -64,7 +65,7 @@ namespace SupermarketReceipt
     class NItemsForAmountOffer : Offer
     {
         private readonly int _numberOfItems;
-        public NItemsForAmountOffer(Product product, int numberOfItems, double argument) : base(product, argument) 
+        public NItemsForAmountOffer(Product product, int numberOfItems, double argument) : base(product, argument)
         {
             _numberOfItems = numberOfItems;
         }
@@ -79,6 +80,26 @@ namespace SupermarketReceipt
                 result = new Discount(Product, $"{_numberOfItems} for {Argument}", -discountTotal);
             }
             return result;
+        }
+    }
+
+    public class Bundle
+    {
+        private Dictionary<Product, double> _bundle;
+
+        public Bundle()
+        {
+            _bundle = new Dictionary<Product, double>();
+        }
+
+        public void AddItem(Product product, double quantity)
+        {
+            _bundle.Add(product, quantity);
+        }
+
+        public Dictionary<Product, double> GetBundleCopy()
+        {
+            return new Dictionary<Product, double>(_bundle);
         }
     }
 }
